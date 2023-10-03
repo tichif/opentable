@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import RestaurantNav from '../../components/ResturantNav';
+import RestaurantNav from '../components/RestaurantNav';
 
 const RestaurantDetailPage = () => {
   return (

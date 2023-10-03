@@ -1,4 +1,4 @@
-import RestaurantNav from '../../../components/ResturantNav';
+import RestaurantNav from '../../components/RestaurantNav';
 
 const RestaurantDetailMenuPage = () => {
   return (
