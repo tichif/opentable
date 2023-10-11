@@ -2,10 +2,10 @@ import RestaurantNav from '../../components/RestaurantNav';
 import MenuCard from './components/MenuCard';
 import RestaurantLayout from '../../layout';
 
-const RestaurantDetailMenuPage = () => {
+const RestaurantDetailMenuPage = ({ params }: { params: { slug: string } }) => {
   return (
     <div className='bg-white w-[100%] rounded p-3 shadow'>
-      <RestaurantNav slug='/ass' />
+      <RestaurantNav slug={`${params.slug}`} />
       <main className='bg-white mt-5'>
         <div>
           <div className='mt-4 pb-1 mb-1'>
