@@ -1,8 +1,32 @@
+import { PrismaClient, Item } from '@prisma/client';
+
 import RestaurantNav from '../../components/RestaurantNav';
 import MenuCard from './components/MenuCard';
-import RestaurantLayout from '../../layout';
 
-const RestaurantDetailMenuPage = ({ params }: { params: { slug: string } }) => {
+const prisma = new PrismaClient();
+
+async function fetchItems(slug: string) {
+  const restaurant = await prisma.restaurant.findUnique({
+    where: {
+      slug,
+    },
+    select: {
+      items: true,
+    },
+  });
+
+  if (!restaurant) {
+    throw new Error();
+  }
+  return restaurant.items;
+}
+
+const RestaurantDetailMenuPage = async ({
+  params,
+}: {
+  params: { slug: string };
+}) => {
+  const items = await fetchItems(params.slug);
   return (
     <div className='bg-white w-[100%] rounded p-3 shadow'>
       <RestaurantNav slug={`${params.slug}`} />
@@ -12,7 +36,11 @@ const RestaurantDetailMenuPage = ({ params }: { params: { slug: string } }) => {
             <h1 className='font-bold text-4xl'>Menu</h1>
           </div>
           <div className='flex flex-wrap justify-between'>
-            <MenuCard />
+            {items.length ? (
+              <MenuCard items={items} />
+            ) : (
+              <p>This restaurant don't have a menu yet.</p>
+            )}
           </div>
         </div>
       </main>
