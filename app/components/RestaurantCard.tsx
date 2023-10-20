@@ -1,4 +1,4 @@
-import { Cuisine, Location, Price } from '@prisma/client';
+import { Cuisine, Location, Price, Review } from '@prisma/client';
 import Link from 'next/link';
 
 import PriceComponent from './Price';
@@ -11,6 +11,7 @@ interface Props {
     location: Location;
     cuisine: Cuisine;
     slug: string;
+    reviews: Review[];
   };
 }
 
@@ -27,7 +28,10 @@ const RestaurantCard = ({ restaurant }: Props) => {
           <h3 className='font-bold text-2xl mb-2'>{restaurant.name}</h3>
           <div className='flex items-start'>
             <div className='flex mb-2'>*****</div>
-            <p className='ml-2'>77 reviews</p>
+            <p className='ml-2'>
+              {restaurant.reviews.length}{' '}
+              {restaurant.reviews.length === 1 ? 'review' : 'reviews'}
+            </p>
           </div>
           <div className='flex text-reg font-light capitalize'>
             <p className=' mr-3'>{restaurant.cuisine.name}</p>

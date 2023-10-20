@@ -47,6 +47,7 @@ async function fetchRestaurantsByQuery(searchParams: SearchParams) {
     price: true,
     slug: true,
     main_image: true,
+    reviews: true,
   };
 
   return prisma.restaurant.findMany({
