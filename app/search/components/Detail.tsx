@@ -4,6 +4,7 @@ import Link from 'next/link';
 import PriceComponent from '../../components/Price';
 
 import { calculateReviewAvg } from '../../../utils/calculateReviewAvg';
+import Stars from '../../components/Stars';
 
 interface Props {
   restaurant: {
@@ -49,7 +50,7 @@ const Detail = ({ restaurant }: Props) => {
       <div className='pl-5'>
         <h2 className='text-3xl'>{restaurant.name}</h2>
         <div className='flex items-start'>
-          <div className='flex mb-2'>*****</div>
+          <Stars reviews={restaurant.reviews} />
           <p className='ml-2 text-sm'>{renderRatingText()}</p>
         </div>
         <div className='mb-9'>
