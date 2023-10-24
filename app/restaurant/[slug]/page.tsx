@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
+import { notFound } from 'next/navigation';
 
 import Description from '../components/Description';
-import Header from '../components/Header';
 import Images from '../components/Images';
 import Rating from '../components/Rating';
 import ReservationCard from '../components/ReservationCard';
@@ -27,7 +27,7 @@ async function fetchRestaurantBySlug(slug: string) {
     },
   });
   if (!restaurant) {
-    throw new Error();
+    notFound();
   }
   return restaurant;
 }
