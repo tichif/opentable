@@ -23,7 +23,7 @@ const Navbar = () => {
                 className='bg-red-400 text-white border p-1 px-4 rounded mr-3'
                 onClick={signOut}
               >
-                Logout
+                Signout
               </button>
             ) : (
               <>
