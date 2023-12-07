@@ -32,7 +32,7 @@ interface AuthState extends State {
 }
 
 const AuthenticationContext = createContext<AuthState>({
-  loading: false,
+  loading: true,
   data: null,
   error: null,
   setAuthState: () => {},
