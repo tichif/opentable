@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getCookie } from 'cookies-next';
 
 import { useAuthContext } from '../app/context/AuthContext';
 

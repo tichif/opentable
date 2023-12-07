@@ -7,12 +7,15 @@ import {
   Dispatch,
   SetStateAction,
   useContext,
+  useEffect,
 } from 'react';
+import axios from 'axios';
+import { getCookie } from 'cookies-next';
 
 interface User {
   id: number;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   city: string;
   email: string;
   phone: string;
@@ -41,6 +44,50 @@ export default function AuthContext({ children }: { children: ReactNode }) {
     data: null,
     error: null,
   });
+
+  const fetchUser = async () => {
+    setAuthState({
+      data: null,
+      error: null,
+      loading: true,
+    });
+    try {
+      const jwt = getCookie('jwt');
+
+      if (!jwt) {
+        setAuthState({
+          data: null,
+          error: null,
+          loading: false,
+        });
+        return;
+      }
+
+      const response = await axios.get('/api/auth/me', {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+
+      axios.defaults.headers.common['Authorization'] = `Bearer ${jwt}`;
+
+      setAuthState({
+        data: response.data,
+        error: null,
+        loading: false,
+      });
+    } catch (error: any) {
+      setAuthState({
+        data: null,
+        error: error.response.data.errorMessage,
+        loading: false,
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   return (
     <AuthenticationContext.Provider

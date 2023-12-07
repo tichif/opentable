@@ -33,7 +33,19 @@ export default async function handler(
       },
     });
 
-    return res.status(200).json({ user });
+    if (!user) {
+      return res.status(401).json({ errorMessage: 'Unauthorized request' });
+    }
+
+    return res
+      .status(200)
+      .json({
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        phone: user.phone,
+        city: user.city,
+      });
   } catch (error) {
     return res.status(401).json({ errorMessage: 'Unauthorized request' });
   }
