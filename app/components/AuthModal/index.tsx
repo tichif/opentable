@@ -1,10 +1,14 @@
 'use client';
 
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState, useEffect, FormEvent } from 'react';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
 import Modal from '@mui/material/Modal';
+import Alert from '@mui/material/Alert';
+
 import Inputs from './Inputs';
+import useAuth from '../../../hooks/useAuth';
+import { useAuthContext } from '../../context/AuthContext';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -22,6 +26,9 @@ export default function Auth({ isSignin }: { isSignin: boolean }) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const { signIn, signUp } = useAuth();
+  const { error, loading, data } = useAuthContext();
+
   const [inputs, setInputs] = useState({
     firstName: '',
     lastName: '',
@@ -30,12 +37,45 @@ export default function Auth({ isSignin }: { isSignin: boolean }) {
     city: '',
     password: '',
   });
+  const [disabled, setDisabled] = useState(true);
+
+  useEffect(() => {
+    if (isSignin) {
+      if (inputs.password || inputs.email) {
+        setDisabled(false);
+        return;
+      }
+    } else {
+      if (
+        inputs.firstName ||
+        inputs.lastName ||
+        inputs.email ||
+        inputs.phone ||
+        inputs.password ||
+        inputs.city
+      ) {
+        setDisabled(false);
+        return;
+      }
+    }
+
+    setDisabled(true);
+  }, [inputs]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputs((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
+  };
+
+  const handleClick = (e: FormEvent<HTMLElement>) => {
+    e.preventDefault();
+    if (isSignin) {
+      signIn({ email: inputs.email, password: inputs.password }, handleClose);
+    } else {
+      signUp(inputs, handleClose);
+    }
   };
 
   return (
@@ -55,28 +95,43 @@ export default function Auth({ isSignin }: { isSignin: boolean }) {
         aria-describedby='modal-modal-description'
       >
         <Box sx={style}>
-          <div className='p-2 h-[600px]'>
-            <div className='uppercase font-bold text-center pb-2 border-b mb-2'>
-              <p className='text-sm'>
-                {isSignin ? 'Sign in' : 'Create Account'}
-              </p>
+          {loading ? (
+            <div className='px-2 py-24 h-[600px] flex justify-center'>
+              <CircularProgress />
             </div>
-            <div className='m-auto'>
-              <h2 className='text-2xl font-light text-center'>
-                {isSignin
-                  ? 'Log into your account'
-                  : 'Create your Oppentable account'}
-              </h2>
-              <Inputs
-                isSignin={isSignin}
-                inputs={inputs}
-                handleChange={handleChange}
-              />
-              <button className='uppercase bg-red-600 w-full text-white p-3 rounded text-sm mb-5 disabled:bg-gray-400'>
-                {isSignin ? 'Sign in' : 'Create Account'}
-              </button>
+          ) : (
+            <div className='p-2 h-[600px]'>
+              {error && (
+                <Alert severity='error' className='mb-4'>
+                  {error}
+                </Alert>
+              )}
+              <div className='uppercase font-bold text-center pb-2 border-b mb-2'>
+                <p className='text-sm'>
+                  {isSignin ? 'Sign in' : 'Create Account'}
+                </p>
+              </div>
+              <div className='m-auto'>
+                <h2 className='text-2xl font-light text-center'>
+                  {isSignin
+                    ? 'Log into your account'
+                    : 'Create your Oppentable account'}
+                </h2>
+                <Inputs
+                  isSignin={isSignin}
+                  inputs={inputs}
+                  handleChange={handleChange}
+                />
+                <button
+                  className='uppercase bg-red-600 w-full text-white p-3 rounded text-sm mb-5 disabled:bg-gray-400'
+                  disabled={disabled}
+                  onClick={handleClick}
+                >
+                  {isSignin ? 'Sign in' : 'Create Account'}
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </Box>
       </Modal>
     </div>
